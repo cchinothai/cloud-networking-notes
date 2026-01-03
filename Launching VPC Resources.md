@@ -1,0 +1,102 @@
+<img src="https://cdn.prod.website-files.com/677c400686e724409a5a7409/6790ad949cf622dc8dcd9fe4_nextwork-logo-leather.svg" alt="NextWork" width="300" />
+
+# Launching VPC Resources
+
+**Project Link:** [View Project](http://learn.nextwork.org/projects/aws-networks-ec2)
+
+**Author:** Cody Chinothai  
+**Email:** cchinothai@gmail.com
+
+---
+
+## Launching VPC Resources
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-ec2_8ee57662)
+
+---
+
+## Introducing Today's Project!
+
+### What is Amazon VPC?
+
+----------------------
+
+### How I used Amazon VPC in this project
+
+-------------------
+
+### One thing I didn't expect in this project was...
+
+---------------------
+
+### This project took me...
+
+-----------
+
+---
+
+## Setting Up Direct VM Access
+
+Directly accessing a virtual machine means that we can connect to our operating system / software and have command line access as if we had it installed locally. 
+
+### SSH is a key method for directly accessing a VM
+
+SSH, or Secure Shell, is the protocol we use for this secure access to a remote machine. When you connect to the instance, SSH verifies you possess the correct private key corresponding to the public key on the server, ensuring only authorized users can access the instance.
+
+In terms of network communication, SSH is also as a type of network traffic. Once SSH has established a secure connection between you and the EC2 instance, all data transmitted (including your commands and the responses from the instance) is encrypted. This encryption makes SSH an ideal method for securely exchanging confidential data e.g. login credentials
+
+### To enable direct access, I set up key pairs
+
+Key pairs are a way for us to programmatically access our virtual machines on AWS in a securely with authentication. 
+
+My private key's file format is .pem (Privacy Enhanced Mail) which is an up to date format for managing cryptographic keys. 
+
+---
+
+## Launching a public server
+
+Start your response with 'I had to change my EC2 instance's networking settings by toggling the network settings where I could choose which VPC and inner subnet this instance will go to, along with the security group it will use for instance-level traffic filtering
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-ec2_88727bef)
+
+---
+
+## Launching a private server
+
+My private server has its own dedicated security group because we want traffic for this server to be more restrictive and blocked off from public internet access. 
+
+My private server's security group's source is custom source type that I defined as the public security group for our custom VPC. This means that resources only within our NextWork Public Security Group can communicate with our instance. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-ec2_4a9e8014)
+
+---
+
+## Speeding up VPC creation
+
+I used an alternative way to set up an Amazon VPC! This time, I created a VPC with a resource map that provided a high-level picture of its subnet, route table, and internet gateway connections. I could configure the number of availability zones and subnets, along with the CIDR ranges for each subnet. 
+
+A VPC resource map sets up the entire VPC configuration with all its associations in one go, instead of having to configure each sequentially and in different sections of the VPC console.
+
+My new VPC has a CIDR block of 10.0.0.0/16. It is possible for my new VPC to have the same IPv4 CIDR block as my existing VPC because VPCs themselves are isolated spaces in the cloud. Network traffic will not conflict between VPCs, since they are isolated (unless VPCs have defined connections to each other). 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-ec2_1cbb1b88)
+
+---
+
+## Speeding up VPC creation
+
+### Tips for using the VPC resource map
+
+When determining the number of public subnets in my VPC, I only had two options: 0 or 2. This is dependent on the number of availability zones that we set up. 
+
+AWS prevents us from creating just a single subnet because it enforces the best practice of avoiding redundancy. When you pick 2 Availability Zones, the wizard makes sure you have a public subnet in each one. This way, your public resources stay up even if one of the two Availaiblity Zones goes down.
+
+This setup is called redundancy (having backups in different places) and high availability (making sure your resources are always accessible). Just one public subnet wouldn’t offer this kind of reliability, so AWS doesn't let you create just one. 
+
+The set up page also offered to create NAT gateways, which let instances in private subnets access the internet for updates and patches, while blocking inbound traffic.
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-ec2_8ee57662)
+
+---
+
+---
