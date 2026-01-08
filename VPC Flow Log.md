@@ -1,0 +1,171 @@
+<img src="https://cdn.prod.website-files.com/677c400686e724409a5a7409/6790ad949cf622dc8dcd9fe4_nextwork-logo-leather.svg" alt="NextWork" width="300" />
+
+# VPC Monitoring with Flow Logs
+
+**Project Link:** [View Project](http://learn.nextwork.org/projects/aws-networks-monitoring)
+
+**Author:** Cody Chinothai  
+**Email:** cchinothai@gmail.com
+
+---
+
+## VPC Monitoring with Flow Logs
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_3e1e79a1)
+
+---
+
+## Introducing Today's Project!
+
+### What is Amazon VPC?
+
+-----------------
+
+### How I used Amazon VPC in this project
+
+--------------------
+
+### One thing I didn't expect in this project was...
+
+-----------------------
+
+### This project took me...
+
+---------------------
+
+---
+
+## In the first part of my project...
+
+### Step 1 - Set up VPCs
+
+In the last step, we created 2 VPCs from scratch using the resource map. If you deleted these resources then recreate this step. 
+
+**Note VPCs themselves do not have charges, along with the subnets, route tables, security groups, and internet gatwayws. There are charges associated with public IPv4 addresses, elastic IPs, and VPC endpoints
+
+### Step 2 - Launch EC2 instances
+
+Now let's launch EC2 instances between the two VPCs. 
+
+### Step 3 - Set up Logs
+
+Now, let's use VPC flow logs to detect our inbound and outbound network traffic.  
+
+### Step 4 - Set IAM permissions for Logs
+
+In this step, we'll create a service role that allows VPC Flow Logs to write logs and send them to Cloudwatch. 
+
+---
+
+## Multi-VPC Architecture
+
+I started my project by launching 2 vpcs, each with 1 public subnet (no private subnets). 
+
+VPC1 CIDR Block: 10.1.0.0/16
+
+VPC2 CIDR Block: 10.2.0.0/16
+
+These are unique so there is no overlapping traffic when we conduct VPC peering between the two 
+
+### I also launched EC2 instances in each subnet
+
+My EC2 instances' security groups allow ICMP traffic from all IPv4 addresses. We do this in order to execute our ping command that tests for connectivity between the two hosts. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_e7fa8775)
+
+---
+
+## Logs
+
+Logs record everything that happens, from users logging in to errors popping up. It's the go-to place to understand what's going on with your systems, troubleshoot problems, and keep an eye on who’s doing what.
+
+Log groups collect logs from the same resource or application and are region-specific. 
+
+### I also set up a flow log for VPC 1
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_e8398869)
+
+---
+
+## IAM Policy and Roles
+
+I created an IAM policy that allows creation of log groups, putting log events, and related log controls. 
+
+Once this policy is created we'll attach it to its own custom IAM role with a Trust Policy
+
+Created IAM role has a trust policy to only allow VPC Flow Logs access to this permission. 
+
+A custom trust policy only allows certain resources to use a specific role. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_4334d777)
+
+---
+
+## In the second part of my project...
+
+### Step 5 - Ping testing and troubleshooting
+
+Now, let's generate network traffic to create data within our flow logs. 
+
+### Step 6 - Set up a peering connection
+
+// We already created a VPC peering connection from the last part. 
+
+### Step 7 - Analyze flow logs
+
+we will review the flow logs recorded from VPC 1's public subnet.
+
+---
+
+## Connectivity troubleshooting
+
+The ping response means that there is successful connection between the two instances via ICMP traffic (Internet Control Message Protocol).
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_99d4ba42)
+
+Receiving ping replies from the public IPv4 address means Instance 2 is correctly configured to respond to ping requests, and Instance 1 can actually communicate with Instance 2 if it traffic goes across the public internet!
+
+---
+
+## Connectivity troubleshooting
+
+Looking at VPC 1's route table, if the ping test with Instance 2's private address failed it's because we didn't specify a VPC peering connection. 
+
+### To solve this, I set up a peering connection between my VPCs
+
+// Make sure each route table specifies the peering conection. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_7316a13d)
+
+---
+
+## Connectivity troubleshooting
+
+// Now let's move onto the next step for our flow log. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_4ec7821f)
+
+---
+
+## Analyzing flow logs
+
+Flow logs tell us about the bytes of data sent successfully from the our two instances using TCP protocol on port 22, with the amount of packets transferred and if the traffic was allowed or rejected.
+
+Our screenshotted flow log caputres all of the ping messages that either reached Instance 2 or failed to. 
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_d116818e)
+
+---
+
+## Logs Insights
+
+Logs Insights is a way to diagnose and filter through your log data via queries.
+
+I ran the query:  Return the top 10 byte transfers by source and destination IP addresses. This gave us the largest data transfers from our ping command. 
+
+
+![Image](http://learn.nextwork.org/enthusiastic_turquoise_radiant_monstera_deliciosa/uploads/aws-networks-monitoring_3e1e79a1)
+
+---
+
+---
